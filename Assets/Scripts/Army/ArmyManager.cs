@@ -42,6 +42,22 @@ public abstract class ArmyManager : MonoBehaviour
         return enemies.FirstOrDefault()?.gameObject;
     }
 
+    public GameObject GetClosestEnemy<T>(Vector3 centerPos, float minRadius, float maxRadius) where T : ArmyElement
+    {
+        // Récupérer tous les ennemis du type T
+        var enemies = GetAllEnemiesOfType<T>(true);
+
+        var closestEnemy = enemies
+            .Where(item => Vector3.Distance(centerPos,item.transform.position)>minRadius
+                    && Vector3.Distance(centerPos, item.transform.position) <= maxRadius) // Filtrer par distance maximale
+            .OrderBy(item => Vector3.Distance(centerPos, item.transform.position)) // Trier par distance croissante
+            .FirstOrDefault(); // Prendre le premier élément (le plus proche)
+
+        // Retourner le GameObject de l'ennemi trouvé, ou null s'il n'y en a pas
+        return closestEnemy?.gameObject;
+    }
+
+
     protected void ComputeStatistics(ref int nDrones,ref int nTurrets,ref int cumulatedHealth)
 	{
         nDrones = m_ArmyElements.Count(item => item is Drone);
