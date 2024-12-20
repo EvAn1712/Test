@@ -6,6 +6,7 @@ using UnityEngine.UI;  // N'oublie pas d'importer ce namespace pour Slider
 
 public class ArmyManagerRed : ArmyManager
 {
+    public TMP_Text shieldCountText; // Référence au texte pour afficher le nombre de boucliers restants
     private int remainingUses = 3; // Nombre d'utilisations restantes
     public TMP_Text shieldMessageText; // Référence à un TextMeshPro pour afficher "Bouclier"
     private float displayDuration = 2f; // Durée d'affichage du message en secondes
@@ -48,9 +49,7 @@ public class ArmyManagerRed : ArmyManager
 
         }
     }
-    
 
-    // Méthode pour activer l'option et afficher "Bouclier"
     private void ActivateShield()
     {
         if (remainingUses > 0)
@@ -58,6 +57,9 @@ public class ArmyManagerRed : ArmyManager
             remainingUses--;
             AddHealthToAllDrones(100f); // Ajoute 100 points de vie à tous les drones
             Debug.Log($"Bouclier activé ! Utilisations restantes : {remainingUses}");
+
+            // Met à jour l'affichage du nombre de boucliers restants
+            UpdateShieldCountUI();
 
             // Affiche "Bouclier" sur l'interface
             StartCoroutine(DisplayShieldMessage());
@@ -68,6 +70,18 @@ public class ArmyManagerRed : ArmyManager
         }
     }
 
+    private void UpdateShieldCountUI()
+    {
+        if (shieldCountText != null)
+        {
+            shieldCountText.text = $"Boucliers restants : {remainingUses}";
+        }
+        else
+        {
+            Debug.LogWarning("Aucun texte assigné pour afficher le nombre de boucliers restants !");
+        }
+    }
+    
     private IEnumerator DisableAfterAnimation()
     {
         // Durée de l'animation (remplacez 1f par la durée réelle de votre animation)
@@ -137,6 +151,7 @@ public class ArmyManagerRed : ArmyManager
         if (Input.GetKeyDown(KeyCode.B))
         {
             ActivateShield(); // Active le bouclier
+            UpdateShieldCountUI();
         }
         UpdateSupremeDroneHealth();
     }
